@@ -1,4 +1,4 @@
-package org.example;
+package org.example;        //il package è la cartella nella quale si trovano i file .java
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,12 +11,12 @@ import java.util.List;
 
 public class ClientHandler implements Runnable{
 
-    private Socket clientSocket = null;
-    private InetAddress address;
-    private int port;
-    private PrintWriter out;
+    private Socket clientSocket = null;         // Attributo del socket
+    private InetAddress address;                // Attributo del address
+    private int port;                           // Attributo della porta
+    private PrintWriter out;                    // Attributo per la stampa del risultato
 
-    public ClientHandler(Socket clientSocket) {
+    public ClientHandler(Socket clientSocket) {     // Costruttore che accetta la connessione di ogni client
         this.clientSocket = clientSocket;
 
         //Indirizzo e porta del client che si connette
@@ -26,16 +26,15 @@ public class ClientHandler implements Runnable{
         System.out.println("Connected: " + address + "with port: " + port);
     }
 
-    Boolean readLoop(BufferedReader in,  PrintWriter out ){
-        // waits for data and reads it in until connection dies
-        // readLine() blocks until the server receives a new line from client
+    Boolean readLoop(BufferedReader in,  PrintWriter out ){     // metodo che legge il comando del client
+
         String s = "";
 
         try {
             while ((s = in.readLine()) != null) {
                 System.out.println(s);
 
-                //COMANDI CLIENT
+                /********* COMANDI CLIENT *********/
                 switch(s)
                 {
                     case "all":
@@ -48,33 +47,33 @@ public class ClientHandler implements Runnable{
                         out.println(WareHouse.getInstance().more_expensive());
                         break;
                     default:
-                        out.println("Comando inesistente");
+                        out.println("Comando inesistente");     // Risposta nel caso venga inserito un comando che non esiste
                 }
             }
 
-            System.out.println("Disconnected: " + address + "with port: " + port);
+            System.out.println("Disconnected: " + address + "with port: " + port);  // Stampiamo messaggio quando un client si disconnette
             WareHouse.getInstance().remove(this);
             System.out.println("Now we have " + WareHouse.getInstance().nOfClients() + " connected client");
 
             return true;
 
-        } catch (IOException e) {
+        } catch (IOException e) {       // Stampiamo messaggio quando un client si disconnette chiudendo la finestra
             System.out.println("Forcing disconnection for: " + address + "with port: " + port);
         }
 
         return false;
     }
 
-    void handle()
+    void handle()       // Metodo che gestisce l'input e l'output del client
     {
-        out = null; // allocate to write answer to client.
-        try {
+        out = null;
+        try {       // Definiamo l'oggetto per l'output
             out = new PrintWriter(clientSocket.getOutputStream(), true);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        try {
+        try {       // Definiamo l'oggetto per l'input
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(clientSocket.getInputStream()));
             readLoop(in, out);
@@ -88,9 +87,12 @@ public class ClientHandler implements Runnable{
         handle();
     }
 
+    /*
     void write(String s)
     {
         out.println(s);
         out.flush();
     }
+    */
+
 }
