@@ -1,4 +1,4 @@
-package org.example;        //il package è la cartella nella quale si trovano i file .java
+package org.example;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -15,20 +15,20 @@ import java.net.Socket;
 /****************************** CODICE ******************************/
 public class App 
 {
-    static final int portNumber = 1234;             // Definiamo la porta
+    static final int portNumber = 1234;
 
     public static void main( String[] args )
     {
         System.out.println("Server started!");
 
-        ServerSocket serverSocket = null;           // Inizializziamo il Server TCP
+        ServerSocket serverSocket = null;
         try {
-            serverSocket = new ServerSocket(portNumber);    // Assegnamo la porta al server
+            serverSocket = new ServerSocket(portNumber);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Socket clientSocket = null;                 // Inizializziamo il CLient TCP
+        Socket clientSocket = null;
 
         while(true)
         {
@@ -39,9 +39,9 @@ public class App
             }
 
             ClientHandler clientHandler = new ClientHandler(clientSocket);
-            WareHouse.getInstance().add(clientHandler);     // Aggiungiamo i client che si connettono alla lista dei client
+            WareHouse.getInstance().add(clientHandler);
 
-            Thread thread = new Thread(clientHandler);      // Creiamo un thread per il client così possono connettersi altri client contemporaneamente
+            Thread thread = new Thread(clientHandler);
             thread.start();
         }
     }

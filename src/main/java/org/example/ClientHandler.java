@@ -1,4 +1,4 @@
-package org.example;        //il package è la cartella nella quale si trovano i file .java
+package org.example;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,22 +11,21 @@ import java.util.List;
 
 public class ClientHandler implements Runnable{
 
-    private Socket clientSocket = null;         // Attributo del socket
-    private InetAddress address;                // Attributo del address
-    private int port;                           // Attributo della porta
-    private PrintWriter out;                    // Attributo per la stampa del risultato
+    private Socket clientSocket = null;
+    private InetAddress address;
+    private int port;
+    private PrintWriter out;
 
-    public ClientHandler(Socket clientSocket) {     // Costruttore che accetta la connessione di ogni client
+    public ClientHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
 
-        //Indirizzo e porta del client che si connette
         address = clientSocket.getInetAddress();
         port = clientSocket.getPort();
 
         System.out.println("Connected: " + address + "with port: " + port);
     }
 
-    Boolean readLoop(BufferedReader in,  PrintWriter out ){     // metodo che legge il comando del client
+    Boolean readLoop(BufferedReader in,  PrintWriter out ){
 
         String s = "";
 
@@ -47,33 +46,33 @@ public class ClientHandler implements Runnable{
                         out.println(WareHouse.getInstance().more_expensive());
                         break;
                     default:
-                        out.println("Comando inesistente");     // Risposta nel caso venga inserito un comando che non esiste
+                        out.println("Comando inesistente");
                 }
             }
 
-            System.out.println("Disconnected: " + address + "with port: " + port);  // Stampiamo messaggio quando un client si disconnette
+            System.out.println("Disconnected: " + address + "with port: " + port);
             WareHouse.getInstance().remove(this);
             System.out.println("Now we have " + WareHouse.getInstance().nOfClients() + " connected client");
 
             return true;
 
-        } catch (IOException e) {       // Stampiamo messaggio quando un client si disconnette chiudendo la finestra
+        } catch (IOException e) {
             System.out.println("Forcing disconnection for: " + address + "with port: " + port);
         }
 
         return false;
     }
 
-    void handle()       // Metodo che gestisce l'input e l'output del client
+    void handle()
     {
         out = null;
-        try {       // Definiamo l'oggetto per l'output
+        try {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        try {       // Definiamo l'oggetto per l'input
+        try {
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(clientSocket.getInputStream()));
             readLoop(in, out);
